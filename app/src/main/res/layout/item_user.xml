@@ -3,6 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="90dp"
     android:orientation="vertical">
+    <ImageView
+        android:id="@+id/imgDelete"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_baseline_cancel_24"
+        android:layout_gravity="right"/>
+
     <TextView
         android:id="@+id/tvUserName"
         android:textColor="@color/black"

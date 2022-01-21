@@ -1,9 +1,6 @@
 package com.example.roomdatabase
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface UserDao {
@@ -17,6 +14,9 @@ interface UserDao {
     //
     //    @Query("DELETE FROM User")
     //    fun deleteAll()
+    @Delete
+    fun deleteUser(user: User?)
+
     @Query("SELECT * FROM user")
-    fun getListUser(): List<User?>?
+    fun listUser(): List<User?>?
 }
