@@ -65,5 +65,8 @@ dependencies {
     // optional - Paging 3 Integration
     implementation "androidx.room:room-paging:2.4.1"
 
+    def rxJavaVersion = '2.1.1'
+    implementation "io.reactivex.rxjava2:rxandroid:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
 
 }

@@ -2,18 +2,19 @@ package com.example.roomdatabase
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.SingleObserver
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import java.lang.NullPointerException
-import java.util.ArrayList
 
 class MainActivity : AppCompatActivity(), UserAdapter.infor {
     var etName: EditText? = null
@@ -21,7 +22,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.infor {
     lateinit var btnAddUser: Button
     lateinit var rvUser: RecyclerView
     var userAdapter: UserAdapter? = null
-    var mlistUser: MutableList<User>? = null
+    var mlistUser: MutableList<User?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,21 +31,12 @@ class MainActivity : AppCompatActivity(), UserAdapter.infor {
         etAddress = findViewById(R.id.etAddress)
         rvUser = findViewById(R.id.rvUser)
         btnAddUser = findViewById(R.id.btnAddUser)
-//        var userDatabase: UserDatabase = UserDatabase.getInstance(this)!!
-//        userDatabase.userDao()!!.insertUser(User("Thu", "Hai Duong1"))
-//            ?.subscribeOn(Schedulers.computation())
-//            ?.subscribe(CompletableObserver(){
-//
-//            })
 
         userAdapter = UserAdapter(this)
-        mlistUser = ArrayList()
-        userAdapter!!.setData(mlistUser, this)
         val linearLayoutManager = LinearLayoutManager(this)
         rvUser.setLayoutManager(linearLayoutManager)
         rvUser.setAdapter(userAdapter)
-        mlistUser = UserDatabase.getInstance(this)!!.userDao()!!.listUser() as MutableList<User>?
-         userAdapter!!.setData(mlistUser, this)
+        loadUser()
         btnAddUser.setOnClickListener(View.OnClickListener { addUser() })
 
     }
@@ -56,19 +48,39 @@ class MainActivity : AppCompatActivity(), UserAdapter.infor {
             return
 
         }
-        if(btnAddUser.text.equals("SAVE")){
+        if(btnAddUser.text.equals("Save")){
         val user = User(userName, userAddress)
         UserDatabase.getInstance(this)!!.userDao()!!.insertUser(user)
         Toast.makeText(this, "Successfully", Toast.LENGTH_SHORT).show()
         etAddress!!.setText("")
         etName!!.setText("")
         hideKeyboard()
-        mlistUser = UserDatabase.getInstance(this)!!.userDao()!!.listUser() as MutableList<User>?
-        userAdapter!!.setData(mlistUser, this)
+        //mlistUser = UserDatabase.getInstance(this)!!.userDao()!!.listUser() as MutableList<User>?
+        //userAdapter!!.setData(mlistUser, this)
         }else{
             val user = User(userName, userAddress)
             UserDatabase.getInstance(this)!!.userDao()!!.updateUser(user)
         }
+        loadUser()
+
+
+    }
+    fun loadUser(){
+        val userDatabase = UserDatabase.getInstance(this)
+        userDatabase!!.userDao()!!.listUser()
+            ?.subscribeOn(Schedulers.computation())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : SingleObserver<MutableList<User?>?> {
+                override fun onSubscribe(d: Disposable) {}
+
+                override fun onSuccess(posts: MutableList<User?>) {
+                    userAdapter!!.setData(posts, this@MainActivity)
+                    userAdapter!!.notifyDataSetChanged()
+                }
+
+                override fun onError(e: Throwable) {}
+
+            })
     }
 
     fun hideKeyboard() {

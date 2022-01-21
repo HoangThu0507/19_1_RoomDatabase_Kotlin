@@ -2,6 +2,8 @@ package com.example.roomdatabase
 
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
+import io.reactivex.Observable
+import io.reactivex.Single
 
 @Dao
 interface UserDao {
@@ -15,11 +17,12 @@ interface UserDao {
     //
     //    @Query("DELETE FROM User")
     //    fun deleteAll()
-    @Update (onConflict = REPLACE)
+    @Update //(onConflict = REPLACE)
     fun updateUser(user: User?)
     @Delete
     fun deleteUser(user: User?)
 
     @Query("SELECT * FROM user")
-    fun listUser(): List<User?>?
+    fun listUser(): Single<MutableList<User?>?>?
+
 }

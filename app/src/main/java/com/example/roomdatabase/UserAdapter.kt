@@ -1,22 +1,18 @@
 package com.example.roomdatabase
 
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
 class UserAdapter(val listener: infor) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
-    private var mListUser: MutableList<User>? = null
+    private var mListUser: MutableList<User?>? = null
     lateinit var context: Context
-    fun setData(list: MutableList<User>?, context: Context) {
+    fun setData(list: MutableList<User?>?, context: Context) {
         mListUser = list
         this.context = context
         notifyDataSetChanged()
@@ -34,12 +30,11 @@ class UserAdapter(val listener: infor) : RecyclerView.Adapter<UserAdapter.UserVi
         holder.tvUserAddress.setText(user.address)
         holder.imgDelete.setOnClickListener {
             UserDatabase.getInstance(context)!!.userDao()!!.deleteUser(mListUser!![position])
-            //Toast.makeText(context, user.name, Toast.LENGTH_SHORT).show()
             mListUser!!.remove(mListUser!![position])
             notifyDataSetChanged()
         }
         holder.itemView.setOnClickListener{
-            listener.update(mListUser!![position])
+            listener.update(mListUser!![position]!!)
         }
 //        holder.itemUser.setOnClickListener {
 ////            var mainActivity = MainActivity()
