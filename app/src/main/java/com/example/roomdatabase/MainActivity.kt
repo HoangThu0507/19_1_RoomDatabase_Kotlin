@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity(), UserAdapter.infor {
         val linearLayoutManager = LinearLayoutManager(this)
         rvUser.setLayoutManager(linearLayoutManager)
         rvUser.setAdapter(userAdapter)
-        //mlistUser = UserDatabase.getInstance(this)!!.userDao()!!.listUser() as MutableList<User>?
-        // userAdapter!!.setData(mlistUser, this)
+        mlistUser = UserDatabase.getInstance(this)!!.userDao()!!.listUser() as MutableList<User>?
+         userAdapter!!.setData(mlistUser, this)
         btnAddUser.setOnClickListener(View.OnClickListener { addUser() })
 
     }
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.infor {
             return
 
         }
-//        if(btnAddUser.text.equals("SAVE")){
+        if(btnAddUser.text.equals("SAVE")){
         val user = User(userName, userAddress)
         UserDatabase.getInstance(this)!!.userDao()!!.insertUser(user)
         Toast.makeText(this, "Successfully", Toast.LENGTH_SHORT).show()
@@ -65,10 +65,10 @@ class MainActivity : AppCompatActivity(), UserAdapter.infor {
         hideKeyboard()
         mlistUser = UserDatabase.getInstance(this)!!.userDao()!!.listUser() as MutableList<User>?
         userAdapter!!.setData(mlistUser, this)
-//        }else{
-//
-//            UserDatabase.getInstance(this)!!.userDao()!!.insertUser(user)
-//        }
+        }else{
+            val user = User(userName, userAddress)
+            UserDatabase.getInstance(this)!!.userDao()!!.updateUser(user)
+        }
     }
 
     fun hideKeyboard() {

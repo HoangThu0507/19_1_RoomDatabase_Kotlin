@@ -1,6 +1,7 @@
 package com.example.roomdatabase
 
 import androidx.room.*
+import androidx.room.OnConflictStrategy.REPLACE
 
 @Dao
 interface UserDao {
@@ -14,6 +15,8 @@ interface UserDao {
     //
     //    @Query("DELETE FROM User")
     //    fun deleteAll()
+    @Update (onConflict = REPLACE)
+    fun updateUser(user: User?)
     @Delete
     fun deleteUser(user: User?)
 
